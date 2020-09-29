@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- <script src="{{ url_for('static', filename= 'js/jquery.min.js') }}"></script> -->
+    <script src="{{ url_for('static', filename= 'js/jquery.Jcrop.min.js') }}"></script>
+    <script src="{{ url_for('static', filename= 'js/download.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename= 'js/webcam-easy.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/jquery.Jcrop.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}" type="text/css" />
+
+    <title>{% block title %} {% endblock %}</title>
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-md navbar-light bg-white">
+      <a href="{{ url_for('index')}}" class="navbar-brand">
+              <img src="static/img/CASI_logo.png" alt="Logo" style="width:20%;">
+            </a>
+        <a class="navbar-brand">OCR Application</a>
+    </nav>
+    <div class="ajax-loader">
+      <img src="static/img/tenor.gif" class="img-responsive" />
+    </div>
+    <div class="container-fluid">
+
+        {% block content %} {% endblock %}
+    <div class = "container">
+      <div class="row">
+        <div class="col-md-6">
+		<!---<input type="button" value="Open Camera App" id="camera"/>--->
+          <input type='file' id="imgInp" />
+
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8" id="image">
+
+            <div style="display:none;" id="div_camera" >
+            <video id="webcam" autoplay playsinline width="450%" height ="450%"></video>
+            <canvas id="canvas" class="d-none"></canvas>
+          </div>
+          <input type="button" value="Capture" id="capture" style="display:none;"/>
+            <br>
+            <input type = "button" value = "Previous" id = "previous"/>
+            <input type = "button" value = "Next" id = "next"/>
+            <label for="page_no" ></label>
+            <br>
+            <img  class="NO-CACHE" id="cropbox" src="#" alt="your image" style="width:100%;height:100%;"/>
+            <!-- <canvas id="cropbox" width="100%"></canvas> -->
+            <!-- <img id="cropbox_camera" src="#" alt="your image" style="width:100%;height:100%;display:none;"/> -->
+            <br>
+          </div>
+          <div class="col-md-4">
+            <br>
+            <br>
+            <div class="row">
+              <label id="code" style="font-weight:bold;">Code:</label>
+            </div>
+            <div class="row">
+              <label> Directory: </label>
+              <input type="text" name="value_directory"  list="value_directory" />
+                <datalist id="value_directory">
+                  {% for directory in directories %}
+                  <option value= "{{directory}}">{{directory}}</option>"
+                  {% endfor %}
+                </datalist>
+              <!-- <select name="value_directory" id="value_directory">
+                <option disabled selected>-- Select an option --</option>
+                {% for directory in directories %}
+                <option value= "{{directory}}">{{directory}}</option>"
+                {% endfor %}
+              </select> -->
+            </div>
+            <div class="row">
+              <label> Sub Directory: </label>
+              <input type="text" name="value_sub_directory"  list="value_sub_directory" />
+                <datalist id="value_sub_directory">
+                </datalist>
+              <!-- <select name="value_sub_directory" id="value_sub_directory">
+                <option disabled selected value>-- Select an option --</option>
+              </select> -->
+            </div>
+            <br>
+            <div class="row">
+              <input type='button' id="title" value='Title:'>
+              <!-- <label>Title:</label> -->
+            </div>
+            <div class="row">
+              <input type="text" id = "value_title" style="width:100%;"/>
+            </div>
+            <br>
+            <div class="row">
+              <input type='button' id="journal" value='Journal:'>
+              <!-- <label>Journal:</label> -->
+            </div>
+            <div class="row">
+              <input type="text" id="value_journal" style="width:100%;"/>
+            </div>
+            <br>
+            <div class="row">
+              <input type='button' id="volume" value='Volume:'>
+              <!-- <label>Volume:</label> -->
+            </div>
+            <div class="row">
+              <input type="text" id="value_volume" style="width:100%;"/>
+            </div>
+            <br>
+            <div class="row">
+              <input type='button' id="issue" value='Issue:'>
+              <!-- <label>Issue:</label> -->
+            </div>
+            <div class="row">
+              <input type="text" id="value_issue" style="width:100%;"/>
+            </div>
+            <br>
+            <div class="row">
+              <input type='button' id="page" value='Page:'>
+            </div>
+            <div class="row">
+              <input type="text" id="value_page" style="width:100%;"/>
+            </div>
+            <br>
+            <div class="row">
+              <label>
+                Date:
+                <input type="date" id="value_date" style="width:100%;"/>
+              </label>
+            </div>
+            <br>
+            <div class="row">
+              <label>Mode:<br>
+              <input type="radio" id="value_mode" name = "mode" value="W"> Web </br>
+              <input type="radio" id="value_mode" name = "mode" value="J"> Journal </br>
+              <input type="radio" id="value_mode" name = "mode" value="GPN"> GP Notes </br>
+	    </div>
+            <br>
+            <div class="row">
+              <label >User:<br>
+                <select name="user" id="value_user">
+                  <option disabled selected value>-- Select an option --</option>
+		  {% for user in user_list %}
+                  <option value= "{{user}}">{{user}}</option>"
+                  {% endfor %}
+		  <!---
+		  <option value="AP">AP</option>
+                  <option value="KJ">KJ</option>
+                  <option value="SL">SL</option>
+                  <option value="SC">SC</option>
+                  <option value="AJ">AJ</option>
+                  <option value="NH">NH</option>
+               	  --->
+		</select>
+            </div>
+            <br>
+            <br>
+            <input type="file" id="selectedFile" style="display: none;" onclick="this.value=null;"/>
+            <div class="row">
+              <input type="button" id="search" value="Find Article" style="width:100%;"/>
+              <br/>
+              <br/>
+              <input type="button" id="submit" value="Update to Temp CSV" style="width:100%;"/>
+              <br/>
+              <br/>
+              <input type="button" id="upload" value="Update Analytics Log" style="width:100%;"/>
+            </div>
+
+          </div>
+
+          </div>
+        </div>
+      </div>
+      <script language="Javascript">
+      // $( function() {
+      //     $( "#datepicker" ).datepicker();
+      //   } );
+    jQuery(function($) {
+      var jcrop_api;
+      var webcam;
+      var size;
+      var div_width;
+      var div_height;
+      var myImg;
+      var page_no;
+      var total_pages;
+      var filename;
+      var type;
+      $("#title,#journal,#code,#volume,#issue,#page").click(function(event){
+        var type = $(this).val();
+
+        // var img = $("#cropbox").attr('src');
+        console.log(div_width);
+        console.log(div_height);
+        console.log(size);
+        $.ajax({
+            url: '/',
+            data: JSON.stringify({  coordinates: size, path: filename, width: div_width, height: div_height, button_name: type}),
+            dataType: 'json',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            beforeSend: function(){
+              $('.ajax-loader').css("visibility", "visible");
+            },
+            complete: function(){
+              $('.ajax-loader').css("visibility", "hidden");
+            },
+            success: function(response) {
+              
+              if (response.title){
+                $(value_title).val(response.title);
+              }
+              else if (response.journal){
+                $(value_journal).val(response.journal);
+              }
+              else if (response.code){
+                $(value_code).val(response.code);
+              }
+              else if (response.volume){
+                $(value_volume).val(response.volume);
+              }
+              else if (response.issue){
+                $(value_issue).val(response.issue);
+              }
+              else if (response.page){
+                $(value_page).val(response.page);
+              }
+              console.log(response);
+            },
+            complete: function(){
+              $('.ajax-loader').css("visibility", "hidden");
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+
+      });
+
+      $("#selectedFile").change(function(){
+        var value_directory = $('[name="value_directory"]').val();
+        var value_sub_directory = $('[name="value_sub_directory"]').val();
+        var value_title = $("#value_title").val();
+        var value_journal = $("#value_journal").val();
+        var value_volume = $("#value_volume").val();
+        var value_issue = $("#value_issue").val();
+        var value_page = $("#value_page").val();
+        var value_mode = $("#value_mode").val();
+        var value_user = $("#value_user").val();
+        var value_date = $("#value_date").val();
+        console.log(value_date);
+        console.log(this.files);
+        console.log(this.files[0]);
+        // var file = document.getElementById('selectedFile').files[0];
+        if (this.files && this.files[0]) {
+          console.log("here again JS");
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              console.log("here again JS 1");
+              $.ajax({
+                  url: '/',
+                  data: JSON.stringify({ file: e.target.result, path: filename,  directory: value_directory, sub_directory: value_sub_directory,
+                    title: value_title, journal: value_journal, volumn: value_volume,
+                    issue: value_issue,page: value_page, mode: value_mode,
+                    user: value_user, date: value_date, button_name: 'Submit'}),
+                  dataType: 'json',
+                  type: 'POST',
+                  contentType: 'application/json; charset=utf-8',
+                  beforeSend: function(){
+                    $('.ajax-loader').css("visibility", "visible");
+                  },
+                  success: function(response) {
+                      console.log(response);
+                  },
+                  complete: function(){
+                    $('.ajax-loader').css("visibility", "hidden");
+                  },
+                  error: function(error) {
+                      console.log(error);
+                  }
+              });
+
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+      });
+
+
+      $("#submit").click(function(event){
+        document.getElementById('selectedFile').click();
+        // var file_data;
+        // if (file) {
+        //     // create reader
+        //     var reader = new FileReader();
+        //     reader.onload = function(e) {
+        //         // browser completed reading file - display it
+        //         file_data = e.target.result;
+        //
+        //     };
+        //     reader.readAsDataURL(file);
+        // }
+      });
+
+
+
+      $("#camera").click(function(){
+        document.getElementById('cropbox').style.display = 'none';
+        // document.getElementById('cropbox_camera').style.display = 'none';
+        document.getElementById('div_camera').style.display = 'block';
+        document.getElementById('capture').style.display = 'block';
+        const webcamElement = document.getElementById('webcam');
+        const canvasElement = document.getElementById('canvas');
+        // const snapSoundElement = document.getElementById('snapSound');
+        webcam = new Webcam(webcamElement, 'user', canvasElement);
+        webcam.start()
+          .then(result =>{
+            console.log("webcam started");
+          })
+          .catch(err => {
+            console.log(err);
+        });
+      });
+
+
+
+      $("#capture").click(function(){
+        // stopJcrop();
+        if ($('#cropbox').data('Jcrop')) {
+            $('#cropbox').data('Jcrop').destroy();
+        }
+        let picture = webcam.snap();
+        document.getElementById('image').style.display = 'block';
+        if (document.getElementById('jcrop-holder')) {
+          document.getElementById('jcrop-holder').img.src='';
+        }
+        document.getElementById('cropbox').src=picture;
+        document.getElementById('cropbox').style.display = 'block';
+        webcam.stop()
+        document.getElementById('div_camera').style.display = 'none';
+        crop();
+        document.getElementById('capture').style.display = 'none';
+      });
+
+
+      $("input[name='value_directory']").on('input', function(e){
+          var selected = $('[name="value_directory"]').val();
+          console.log(selected);
+          $.ajax({
+              url: '/',
+              data: JSON.stringify({ pull_directory: selected }),
+              dataType: 'json',
+              type: 'POST',
+              contentType: 'application/json; charset=utf-8',
+              beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+              },
+              success: function(response) {
+                if (response.sub_directory){
+                  var optionsAsString = "";
+                  for(var i = 0; i < response.sub_directory.length; i++) {
+                      optionsAsString += "<option value='" + response.sub_directory[i] + "'>" + response.sub_directory[i] + "</option>";
+                  }
+                  $( 'datalist[id="value_sub_directory"]').append(optionsAsString);
+                }
+              },
+              complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+              },
+              error: function(error) {
+                  console.log(error);
+              }
+          });
+      });
+
+      $("#search").click(function(){
+        window.open('https://www.google.com/search?q='+document.getElementById("value_title").value+'+'+document.getElementById("value_journal").value,'_blank');
+      });
+
+      $("#next").click(function(){
+        if (page_no < total_pages){
+          page_no = page_no + 1
+          $.ajax({
+              url: '/',
+              data: JSON.stringify({ page_number : page_no}),
+              dataType: 'json',
+              type: 'POST',
+              contentType: 'application/json; charset=utf-8',
+              beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+              },
+              success: function(response) {
+                if (response.page){
+                  filename = response.page;
+                  page_no = response.page_no;
+                  $("label[for='page_no']").text(page_no+" of "+total_pages);
+                  if ($('#cropbox').data('Jcrop')) {
+                    $('#cropbox').data('Jcrop').destroy();
+                  }
+                  document.getElementById('cropbox').removeAttribute('src');
+                  $('.jcrop-holder img').attr('src', '');
+                  $('#cropbox').attr('src', '/static/'+filename);
+                  crop();
+                }
+              },
+              complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+              },
+              error: function(error) {
+                  console.log(error);
+              }
+          });
+      }
+      });
+
+      $("#previous").click(function(){
+        if(page_no > 1){
+          page_no = page_no - 1
+          $.ajax({
+              url: '/',
+              data: JSON.stringify({ page_number : page_no}),
+              dataType: 'json',
+              type: 'POST',
+              contentType: 'application/json; charset=utf-8',
+              beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+              },
+              success: function(response) {
+                if (response.page){
+                  filename = response.page;
+                  page_no = response.page_no;
+                  $("label[for='page_no']").text(page_no+" of "+total_pages);
+                  if ($('#cropbox').data('Jcrop')) {
+                    $('#cropbox').data('Jcrop').destroy();
+                  }
+                  document.getElementById('cropbox').removeAttribute('src');
+                  $('.jcrop-holder img').attr('src', '');
+                  $('#cropbox').attr('src', '/static/'+filename);
+                  crop();
+                }
+              },
+              complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+              },
+              error: function(error) {
+                  console.log(error);
+              }
+          });
+      }
+      });
+
+      $("#upload").click(function(event){
+        // var type = $(this).val();
+        $.ajax({
+            url: '/upload',
+            data: JSON.stringify({ upload: 'Upload'}),
+            dataType: 'json',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            beforeSend: function(){
+              $('.ajax-loader').css("visibility", "visible");
+            },
+            success: function(response) {
+                console.log(response);
+            },
+            complete: function(){
+              $('.ajax-loader').css("visibility", "hidden");
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+
+      });
+
+      $("#imgInp").change(function(){
+        if ($('#cropbox').data('Jcrop')) {
+          $('#cropbox').data('Jcrop').destroy();
+        }
+        console.log(this);
+        document.getElementById('cropbox').style.display = 'block';
+        readURL(this);
+
+      });
+
+
+
+      function readURL(input) {
+          if (input.files && input.files[0]) {
+              var reader = new FileReader();
+              console.log("C3");
+              reader.onload = function (e) {
+                $.ajax({
+                    url: '/',
+                    data: JSON.stringify({ file: e.target.result, split: 'Split'}),
+                    dataType: 'json',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    beforeSend: function(){
+                      $('.ajax-loader').css("visibility", "visible");
+                    },
+                    success: function(response) {
+                      if (response.page){
+			console.log('Hello');
+                        console.log(response.page);
+			filename = response.page;
+                        page_no = response.page_no;
+                        total_pages = response.total_pages;
+                        $("label[for='page_no']").text(page_no+" of "+total_pages);
+                        $('.jcrop-holder img').attr('src', '');
+                        $('#cropbox').attr('src', '/static/'+filename);
+                        crop();
+                      }
+                    },
+                    complete: function(){
+                      $('.ajax-loader').css("visibility", "hidden");
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+
+              }
+              reader.readAsDataURL(input.files[0]);
+          }
+      }
+
+
+      function crop(){
+        myImg = document.querySelector('#cropbox');
+        div_width = myImg.clientWidth;
+        div_height = myImg.clientHeight;
+        jcrop_api = $('#cropbox').Jcrop({
+          // setImage: path,
+          // aspectRatio: 16/9,
+          onSelect: function(c){
+           size = {x:c.x,y:c.y,w:c.w,h:c.h};
+           // $("#crop").css("visibility", "visible");
+           // div_width = myImg.clientWidth;
+           // div_height = myImg.clientHeight;
+          }
+          // console.log(this.width);
+        });
+
+      }
+
+    });
+
+
+
+
+</script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>

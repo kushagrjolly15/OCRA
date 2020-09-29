@@ -1,0 +1,26 @@
+<annotation>
+    <folder>tmp</folder>
+    <filename>bb36baff-cdfa-48c7-a870-bbb028562580-1.jpg</filename>
+    <path>/home/kjolly5/OCRA/static/tmp/bb36baff-cdfa-48c7-a870-bbb028562580-1.jpg</path>
+    <source>
+        <database>ODM</database>
+    </source>
+    <size>
+        <width>730</width>
+        <height>1026</height>
+        <depth>3</depth>
+    </size>
+    <segmented>1</segmented>
+    <object>
+        <name>Title:</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>284</xmin>
+            <ymin>15</ymin>
+            <xmax>444</xmax>
+            <ymax>44</ymax>
+        </bndbox>
+    </object>
+</annotation>
